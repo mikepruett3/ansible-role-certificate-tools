@@ -1,2 +1,42 @@
 ---
 # tasks file for ansible-role-certificate-tools
+
+#- name: "Download the {{ domain }} certificate"
+#  ansible.builtin.shell: echo | openssl s_client -servername {{ domain }} -connect {{ domain }}:443 2>/dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > /tmp/{{ domain }}.txt
+
+- name: "Get the current certificate for {{ domain }}"
+  community.crypto.get_certificate:
+    host: "{{ domain }}"
+    port: 443
+  delegate_to: localhost
+  run_once: true
+  register: certificate
+
+- name: "Ensure that certificate is still valid 4 weeks from now"
+  community.crypto.x509_certificate_info:
+    content: "{{ certificate }}"
+    valid_at:
+      one_day: "+1d"
+      one_month: "+4w"
+  delegate_to: localhost
+  register: validity_check
+
+- name: "Send email alert if certificate is expiring in 4 weeks or less"
+  ansible.builtin.mail:
+    host: "{{ smtp_host }}"
+    port: "{{ smtp_port }}"
+    to: "{{ recipient }}"
+    from: "{{ sender }}"
+    subject: "{{ domain }} certificate is expiring in less than 45 days!"
+    body: "{{ certificate }}"
+    secure: never
+  delegate_to: localhost
+  when:
+    - validity_check.valid_at.one_day
+    - not validity_check.valid_at.one_month
+
+#- name: "Cleanup certificate file download"
+#  ansible.builtin.file:
+#    path: /tmp/{{ domain }}.txt
+#    state: absent
+#    force: yes

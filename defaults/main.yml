@@ -1,2 +1,9 @@
 ---
 # defaults file for ansible-role-certificate-tools
+
+domain: "www.google.com"
+
+smtp_host: "mail-server.example.com"
+smtp_port: "25"
+sender: "myhost@example.org"
+recipient: "it@example.org"
