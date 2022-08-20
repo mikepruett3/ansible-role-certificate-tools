@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: mikepruett3
-  description: Ansible role that provides tools for Certificate Management on Linux Servers.
+  description: Ansible role that provides tools for Certificate Management.
   company: "First American Payment Systems"
   license: "license (MIT)"
   min_ansible_version: 2.9

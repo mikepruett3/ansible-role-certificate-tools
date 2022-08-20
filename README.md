@@ -1,7 +1,7 @@
 Ansible Role: Certificate Tools
 =========
 
-Ansible role that provides tools for Certificate Management on Linux Servers.
+Ansible role that provides tools for Certificate Management.
 
 Requirements
 ------------
