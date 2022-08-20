@@ -14,7 +14,7 @@
 
 - name: "Ensure that certificate is still valid 4 weeks from now"
   community.crypto.x509_certificate_info:
-    content: "{{ certificate }}"
+    content: "{{ certificate.cert }}"
     valid_at:
       one_day: "+1d"
       one_month: "+4w"
@@ -28,7 +28,7 @@
     to: "{{ recipient }}"
     from: "{{ sender }}"
     subject: "{{ domain }} certificate is expiring in less than 45 days!"
-    body: "{{ certificate }}"
+    body: "{{ certificate.cert }}"
     secure: never
   delegate_to: localhost
   when:
